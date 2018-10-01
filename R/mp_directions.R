@@ -5,6 +5,7 @@
 #' \item{\code{matrix} with one row and two columns (lon, lat)}
 #' \item{\code{sf} or \code{sfc} point layer with one feature}
 #' }
+#' @param waypoints Waypoints, in one of the same formats as for \code{origins}
 #' @param destination Destination, in one of the same formats as for \code{origins}
 #' @param mode Travel mode, one of: \code{"driving"} (default), \code{"transit"}, \code{"walking"}, \code{"bicycling"}
 #' @param arrival_time The desired time of arrival for transit directions, as \code{POSIXct}
@@ -44,6 +45,7 @@
 
 mp_directions = function(
   origin,
+  waypoints = null,
   destination,
   mode = c("driving", "transit", "walking", "bicycling"),
   arrival_time = NULL,
@@ -60,8 +62,9 @@ mp_directions = function(
   .check_posix_time(arrival_time)
   .check_posix_time(departure_time)
 
-  # Origin & Destination
+  # Origin, Waypoints & Destination
   origin = encode_locations(origin, single = TRUE)
+  if (length(waypoints) >0) waypoints = encode_locations(waypoints, single=(length(waypoints)==1))
   destination = encode_locations(destination, single = TRUE)
 
   # URL & origin and destination
@@ -75,7 +78,17 @@ mp_directions = function(
     mode[1],
     "&alternatives=",
     tolower(alternatives))
-
+ 
+  # Add 'waypoints'
+  if (length(waypoints)>0){
+    url = paste0(url,",waypoints=",waypoints[1])
+  }
+  if (length(waypoints)>1){
+    for (i in 2:length(waypoints)){
+      url = paste0(url,"|",waypoints[i])
+    }
+  }
+ 
   # Add 'arrival_time'
   if(!is.null(arrival_time)) {
     url = paste0(
