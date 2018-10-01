@@ -45,7 +45,7 @@
 
 mp_directions = function(
   origin,
-  waypoints = null,
+  waypoints = NULL,
   destination,
   mode = c("driving", "transit", "walking", "bicycling"),
   arrival_time = NULL,
