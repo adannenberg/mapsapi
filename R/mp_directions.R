@@ -81,7 +81,7 @@ mp_directions = function(
  
   # Add 'waypoints'
   if (length(waypoints)>0){
-    url = paste0(url,",waypoints=optimize:true|",waypoints[1])
+    url = paste0(url,",&waypoints=optimize:true|",waypoints[1])
   }
   if (length(waypoints)>1){
     for (i in 2:length(waypoints)){
